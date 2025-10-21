@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video 1 | Mauli Krupa Graphics</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Mauli Krupa Graphics</h1>
+  </header>
+
+  <main class="video-container">
+    <video id="mainVideo" controls>
+      <source src="videos/video1.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+
+    <div id="blurOverlay">
+      <p>Unlock full video by paying ₹199</p>
+      <canvas id="upiQR"></canvas>
+      <p class="upi-text">Scan & Pay UPI: <b>7588384982@fam</b></p>
+      <button id="unlockBtn">I have paid</button>
+      <div id="unlockSection" class="hidden">
+        <input type="text" id="unlockCodeInput" placeholder="Enter unlock code">
+        <button id="submitCodeBtn">Unlock</button>
+      </div>
+    </div>
+
+    <a id="downloadBtn" class="hidden" href="videos/video1.mp4" download>Download Full Video</a>
+  </main>
+
+  <footer>
+    <p>© 2025 Mauli Krupa Graphics</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+  <script>
+    const videoPrice = 199;
+    const upiID = "7588384982@fam";
+    const upiName = "Mauli Krupa graphics";
+    const unlockCode = "ADI199"; // you can change this per video
+
+    const video = document.getElementById("mainVideo");
+    const blurOverlay = document.getElementById("blurOverlay");
+    const unlockBtn = document.getElementById("unlockBtn");
+    const unlockSection = document.getElementById("unlockSection");
+    const submitCodeBtn = document.getElementById("submitCodeBtn");
+    const downloadBtn = document.getElementById("downloadBtn");
+
+    // Generate UPI QR
+    const qr = new QRious({
+      element: document.getElementById("upiQR"),
+      value: `upi://pay?pa=${upiID}&pn=${encodeURIComponent(upiName)}&am=${videoPrice}&cu=INR`,
+      size: 180
+    });
+
+    // Auto blur after 15 seconds
+    video.addEventListener('timeupdate', () => {
+      if (video.currentTime >= 15) {
+        video.pause();
+        blurOverlay.style.display = 'flex';
+      }
+    });
+
+    unlockBtn.addEventListener('click', () => {
+      unlockSection.classList.remove("hidden");
+    });
+
+    submitCodeBtn.addEventListener('click', () => {
+      const entered = document.getElementById("unlockCodeInput").value.trim();
+      if (entered === unlockCode) {
+        blurOverlay.style.display = 'none';
+        video.currentTime = 15;
+        video.play();
+        downloadBtn.classList.remove("hidden");
+      } else {
+        alert("Incorrect code. Please check again.");
+      }
+    });
+  </script>
+</body>
+</html>
